@@ -1,0 +1,100 @@
+---
+import { sobreMi, habilidades, idiomas } from '../data/portafolio';
+---
+
+<section class="seccion" id="sobre-mi">
+  <div class="contenedor sobre">
+    <div>
+      <h2 class="seccion__titulo">Sobre mí</h2>
+      <p class="sobre__texto">{sobreMi}</p>
+    </div>
+
+    <div class="sobre__datos">
+      {
+        habilidades.map((h) => (
+          <div class="grupo">
+            <h3>{h.grupo}</h3>
+            <ul class="herramientas">
+              {h.items.map((i) => <li>{i}</li>)}
+            </ul>
+          </div>
+        ))
+      }
+
+      <div class="grupo">
+        <h3>Idiomas</h3>
+        <dl class="idiomas">
+          {
+            idiomas.map((i) => (
+              <div>
+                <dt>{i.idioma}</dt>
+                <dd>{i.nivel}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: start;
+  }
+
+  .sobre__texto {
+    margin-top: 2rem;
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    line-height: 1.55;
+    max-width: 36rem;
+  }
+
+  .sobre__datos {
+    display: grid;
+    gap: 2rem;
+    padding-top: 0.5rem;
+  }
+
+  .grupo h3 {
+    font-size: 1.0625rem;
+    font-stretch: 112%;
+    margin-bottom: 0.75rem;
+  }
+
+  .idiomas {
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .idiomas div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--linea);
+    font-size: 1rem;
+  }
+
+  .idiomas dt {
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-weight: 650;
+  }
+
+  .idiomas dd {
+    margin: 0;
+    color: var(--tinta-suave);
+    text-align: right;
+  }
+
+  @media (max-width: 52rem) {
+    .sobre {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

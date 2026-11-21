@@ -1,0 +1,251 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { audio } from '../data/portafolio';
+
+// Solo se activa el reproductor si el archivo existe dentro de public/
+const existe = fs.existsSync(path.join(process.cwd(), 'public', audio.archivo));
+
+const barras = Array.from({ length: 96 }, (_, i) => {
+  const v = Math.abs(Math.sin(i * 0.41) * 0.55 + Math.sin(i * 0.13 + 1) * 0.45);
+  return Math.max(0.1, Math.min(1, v));
+});
+---
+
+<section class="seccion" id="audio" style="--color-pista: var(--audio)">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <span class="pista">A1</span>
+      <h2 class="seccion__titulo">Audio</h2>
+      <p class="seccion__intro">Grabación, edición y mezcla con Audition y FL Studio.</p>
+    </div>
+
+    <div class="reproductor" data-reproductor data-activo={existe ? 'si' : 'no'}>
+      {existe && <audio src={audio.archivo} preload="metadata" />}
+
+      <button class="reproductor__boton" type="button" aria-label="Reproducir" disabled={!existe} data-play>
+        <svg class="icono-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        <svg class="icono-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
+      </button>
+
+      <div class="reproductor__cuerpo">
+        <div class="reproductor__info">
+          <h3>{audio.titulo}</h3>
+          <span class="reproductor__tiempo" data-tiempo>0:00 / 0:00</span>
+        </div>
+
+        <div class="reproductor__onda" style="--avance: 0">
+          <svg viewBox="0 0 96 40" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <clipPath id="onda-avance" clipPathUnits="objectBoundingBox">
+                <rect class="reproductor__mascara" width="0" height="1" />
+              </clipPath>
+            </defs>
+            <g class="onda-base">
+              {barras.map((b, i) => <rect x={i + 0.2} y={20 - b * 18} width="0.6" height={b * 36} rx="0.3" />)}
+            </g>
+            <g class="onda-avance" clip-path="url(#onda-avance)">
+              {barras.map((b, i) => <rect x={i + 0.2} y={20 - b * 18} width="0.6" height={b * 36} rx="0.3" />)}
+            </g>
+          </svg>
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            value="0"
+            step="1"
+            aria-label="Posición de la pista"
+            disabled={!existe}
+            data-posicion
+          />
+        </div>
+
+        {
+          !existe && (
+            <p class="reproductor__aviso">
+              Falta el archivo. Copia el audio a <code>public{audio.archivo}</code> o cambia la ruta en
+              <code>src/data/portafolio.ts</code>.
+            </p>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="audio__texto">
+      <p>{audio.descripcion}</p>
+      <ul class="herramientas" aria-label="Herramientas">
+        {audio.herramientas.map((h) => <li>{h}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-reproductor][data-activo="si"]').forEach((caja) => {
+    const audio = caja.querySelector('audio')!;
+    const boton = caja.querySelector<HTMLButtonElement>('[data-play]')!;
+    const rango = caja.querySelector<HTMLInputElement>('[data-posicion]')!;
+    const tiempo = caja.querySelector<HTMLElement>('[data-tiempo]')!;
+    const mascara = caja.querySelector<SVGRectElement>('.reproductor__mascara')!;
+
+    const fmt = (s: number) => {
+      if (!isFinite(s)) return '0:00';
+      return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    };
+
+    const pintar = () => {
+      const p = audio.duration ? audio.currentTime / audio.duration : 0;
+      mascara.setAttribute('width', String(p));
+      rango.value = String(Math.round(p * 1000));
+      tiempo.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+    };
+
+    boton.addEventListener('click', () => (audio.paused ? audio.play() : audio.pause()));
+    audio.addEventListener('play', () => {
+      caja.classList.add('sonando');
+      boton.setAttribute('aria-label', 'Pausar');
+    });
+    audio.addEventListener('pause', () => {
+      caja.classList.remove('sonando');
+      boton.setAttribute('aria-label', 'Reproducir');
+    });
+    audio.addEventListener('timeupdate', pintar);
+    audio.addEventListener('loadedmetadata', pintar);
+    rango.addEventListener('input', () => {
+      if (audio.duration) audio.currentTime = (Number(rango.value) / 1000) * audio.duration;
+      pintar();
+    });
+  });
+</script>
+
+<style>
+  .reproductor {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: center;
+    padding: clamp(1rem, 3vw, 2rem);
+    background: var(--tinta);
+    color: var(--papel-alto);
+    border-radius: 6px;
+    font-family: var(--display);
+    font-stretch: 100%;
+  }
+
+  .reproductor__boton {
+    width: clamp(3.5rem, 8vw, 5rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 0;
+    display: grid;
+    place-items: center;
+    background: var(--audio);
+    color: var(--tinta);
+    cursor: pointer;
+  }
+
+  .reproductor__boton:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .reproductor__boton svg {
+    width: 45%;
+    fill: currentColor;
+  }
+
+  .icono-pausa,
+  .sonando .icono-play {
+    display: none;
+  }
+
+  .sonando .icono-pausa {
+    display: block;
+  }
+
+  .reproductor__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .reproductor__info h3 {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-stretch: 112%;
+  }
+
+  .reproductor__tiempo {
+    font-variant-numeric: tabular-nums;
+    color: #9fb0c8;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .reproductor__onda {
+    position: relative;
+    height: clamp(3.5rem, 9vw, 6rem);
+  }
+
+  .reproductor__onda svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .onda-base {
+    fill: #3a5a84;
+  }
+
+  .onda-avance {
+    fill: var(--audio);
+  }
+
+  .reproductor__onda input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .reproductor__onda input:disabled {
+    cursor: not-allowed;
+  }
+
+  .reproductor__onda:has(input:focus-visible) {
+    outline: 3px solid var(--cabezal);
+    outline-offset: 4px;
+    border-radius: var(--radio);
+  }
+
+  .reproductor__aviso {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: #c9d4e3;
+  }
+
+  .reproductor__aviso code {
+    font-size: 0.8125rem;
+    color: var(--audio);
+  }
+
+  .audio__texto {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 38rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 40rem) {
+    .reproductor {
+      grid-template-columns: 1fr;
+    }
+    .reproductor__info {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>

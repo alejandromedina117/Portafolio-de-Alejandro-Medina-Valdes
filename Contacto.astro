@@ -1,0 +1,141 @@
+---
+import { perfil } from '../data/portafolio';
+
+const redes = perfil.redes.filter((r) => r.url);
+const anio = new Date().getFullYear();
+---
+
+<section class="contacto" id="contacto">
+  <div class="contenedor">
+    <h2 class="contacto__titulo">¿Tienes un proyecto de video, diseño o contenido?</h2>
+    <a class="contacto__correo" href={`mailto:${perfil.correo}`}>{perfil.correo}</a>
+
+    <div class="contacto__acciones">
+      <a class="boton boton--claro" href={`https://wa.me/${perfil.whatsapp}`} target="_blank" rel="noopener">
+        Escribir por WhatsApp
+      </a>
+      <a class="boton boton--contorno" href={perfil.cv} download>Descargar CV</a>
+    </div>
+
+    <dl class="contacto__datos">
+      <div>
+        <dt>Teléfono</dt>
+        <dd><a href={`tel:${perfil.telefono.replace(/\s/g, '')}`}>{perfil.telefono}</a></dd>
+      </div>
+      <div>
+        <dt>Ubicación</dt>
+        <dd>{perfil.ubicacion}</dd>
+      </div>
+      {
+        redes.length > 0 && (
+          <div>
+            <dt>Redes</dt>
+            <dd class="contacto__redes">
+              {redes.map((r) => (
+                <a href={r.url} target="_blank" rel="noopener">
+                  {r.nombre}
+                </a>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+    </dl>
+
+    <p class="pie">© {anio} {perfil.nombre}</p>
+  </div>
+</section>
+
+<style>
+  .contacto {
+    background: var(--tinta);
+    color: var(--papel-alto);
+    padding-block: clamp(4.5rem, 12vw, 9rem) 2rem;
+    scroll-margin-top: 3.5rem;
+  }
+
+  .contacto__titulo {
+    font-size: clamp(2rem, 5.5vw, 4.25rem);
+    max-width: 18ch;
+  }
+
+  .contacto__correo {
+    display: inline-block;
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-weight: 600;
+    font-size: clamp(1.25rem, 4.2vw, 3rem);
+    color: var(--video);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .contacto__correo:hover {
+    color: var(--papel-alto);
+  }
+
+  .contacto__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .boton--claro {
+    background: var(--papel-alto);
+    color: var(--tinta);
+    border-color: var(--papel-alto);
+  }
+
+  .boton--claro:hover {
+    background: var(--video);
+    border-color: var(--video);
+  }
+
+  .boton--contorno {
+    border-color: var(--papel-alto);
+    color: var(--papel-alto);
+  }
+
+  .boton--contorno:hover {
+    background: var(--papel-alto);
+    color: var(--tinta);
+  }
+
+  .contacto__datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 3.5rem;
+    margin: clamp(3rem, 8vw, 5rem) 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #2c4a73;
+  }
+
+  .contacto__datos dt {
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-size: 0.875rem;
+    color: #9fb0c8;
+  }
+
+  .contacto__datos dd {
+    margin: 0.2rem 0 0;
+  }
+
+  .contacto__redes {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .contacto a:focus-visible {
+    outline-color: var(--foto);
+  }
+
+  .pie {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    font-size: 0.875rem;
+    color: #9fb0c8;
+  }
+</style>

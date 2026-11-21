@@ -1,0 +1,89 @@
+---
+import Marco from './Marco.astro';
+import { disenos } from '../data/portafolio';
+---
+
+<section class="seccion" id="diseno" style="--color-pista: var(--diseno)">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <span class="pista">V2</span>
+      <h2 class="seccion__titulo">Diseño gráfico</h2>
+      <p class="seccion__intro">
+        Infografías, banners y comunicados para empresas e instituciones, hechos con Photoshop,
+        Illustrator y Canva.
+      </p>
+    </div>
+
+    <div class="disenos">
+      {
+        disenos.map((d, i) => (
+          <figure class="pieza" id={`diseno-${i + 1}`}>
+            <Marco pieza={d} carpeta="src/assets/disenos/" sizes="(max-width: 48rem) 100vw, 55vw" />
+            <figcaption class="pieza__pie">
+              <h3>{d.titulo}</h3>
+              {d.contexto && <p class="contexto">{d.contexto}</p>}
+              <p>{d.descripcion}</p>
+              <ul class="herramientas" aria-label="Herramientas">
+                {d.herramientas.map((h) => <li>{h}</li>)}
+              </ul>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Rejilla alterna: ancho, angosto / angosto, ancho */
+  .disenos {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .pieza {
+    margin: 0;
+    grid-column: span 6;
+    scroll-margin-top: 5rem;
+  }
+
+  .pieza:nth-child(4n + 1),
+  .pieza:nth-child(4n + 4) {
+    grid-column: span 7;
+  }
+
+  .pieza:nth-child(4n + 2),
+  .pieza:nth-child(4n + 3) {
+    grid-column: span 5;
+  }
+
+  .pieza:nth-child(4n + 2) {
+    margin-top: clamp(0rem, 8vw, 7rem);
+  }
+
+  .pieza__pie {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    max-width: 34rem;
+    font-size: 1rem;
+  }
+
+  .pieza__pie h3 {
+    font-size: 1.25rem;
+    font-stretch: 112%;
+  }
+
+  .pieza__pie .herramientas {
+    margin-top: 0.35rem;
+  }
+
+  @media (max-width: 48rem) {
+    .pieza:nth-child(n) {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+  }
+</style>

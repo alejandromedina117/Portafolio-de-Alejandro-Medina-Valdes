@@ -1,0 +1,104 @@
+---
+import { experiencia, formacion } from '../data/portafolio';
+---
+
+<section class="seccion" id="experiencia">
+  <div class="contenedor">
+    <div class="seccion__cabecera seccion__cabecera--sola">
+      <h2 class="seccion__titulo">Experiencia</h2>
+    </div>
+
+    <ol class="trayectoria">
+      {
+        experiencia.map((e) => (
+          <li>
+            <span class="trayectoria__fechas">{e.fechas}</span>
+            <div>
+              <h3>{e.puesto}</h3>
+              <p class="contexto">{e.lugar}</p>
+              <p class="trayectoria__detalle">{e.detalle}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h3 class="subtitulo">Formación</h3>
+    <ol class="trayectoria trayectoria--corta">
+      {
+        formacion.map((f) => (
+          <li>
+            <span class="trayectoria__fechas">{f.fechas}</span>
+            <div>
+              <h4>{f.titulo}</h4>
+              <p class="contexto">{f.lugar}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .seccion__cabecera--sola {
+    grid-template-columns: 1fr;
+  }
+
+  .trayectoria {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .trayectoria li {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) 1fr;
+    gap: 0.5rem 2rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--linea);
+  }
+
+  .trayectoria li:last-child {
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .trayectoria__fechas {
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.2rem;
+  }
+
+  .trayectoria h3,
+  .trayectoria h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    font-stretch: 112%;
+    font-weight: 750;
+    line-height: 1.15;
+    margin: 0 0 0.3rem;
+  }
+
+  .trayectoria h4 {
+    font-family: var(--display);
+    font-size: 1.1875rem;
+  }
+
+  .trayectoria__detalle {
+    margin-top: 0.5rem;
+    max-width: 40rem;
+  }
+
+  .subtitulo {
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    margin: clamp(3rem, 7vw, 5rem) 0 1.5rem;
+  }
+
+  @media (max-width: 40rem) {
+    .trayectoria li {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

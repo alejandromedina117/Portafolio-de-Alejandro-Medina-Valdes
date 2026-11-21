@@ -1,0 +1,63 @@
+---
+import Marco from './Marco.astro';
+import { fotos } from '../data/portafolio';
+---
+
+<section class="seccion" id="fotografia" style="--color-pista: var(--foto)">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <span class="pista">V1</span>
+      <h2 class="seccion__titulo">Fotografía</h2>
+      <p class="seccion__intro">Fotografía digital con edición y corrección de color propias.</p>
+    </div>
+
+    <div class="fotos">
+      {
+        fotos.map((f, i) => (
+          <figure class="foto" id={`foto-${i + 1}`}>
+            <Marco pieza={f} carpeta="src/assets/fotos/" sizes="(max-width: 48rem) 100vw, 40vw" />
+            <figcaption>
+              <h3>{f.titulo}</h3>
+              <p>{f.descripcion}</p>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .fotos {
+    display: grid;
+    grid-template-columns: 3fr 4.5fr 3fr;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    align-items: center;
+  }
+
+  .foto {
+    margin: 0;
+    scroll-margin-top: 5rem;
+  }
+
+  figcaption {
+    display: grid;
+    gap: 0.3rem;
+    margin-top: 0.85rem;
+    font-size: 0.9375rem;
+    color: var(--tinta-suave);
+  }
+
+  figcaption h3 {
+    font-size: 1.0625rem;
+    font-stretch: 112%;
+    color: var(--tinta);
+  }
+
+  @media (max-width: 48rem) {
+    .fotos {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>

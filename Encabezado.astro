@@ -1,0 +1,106 @@
+---
+import { perfil } from '../data/portafolio';
+
+const enlaces = [
+  { texto: 'Trabajo', href: '#trabajo' },
+  { texto: 'Experiencia', href: '#experiencia' },
+  { texto: 'Sobre mí', href: '#sobre-mi' },
+  { texto: 'Contacto', href: '#contacto' },
+];
+---
+
+<header class="encabezado">
+  <div class="contenedor encabezado__fila">
+    <a class="encabezado__marca" href="#inicio">Alejandro Medina</a>
+    <nav aria-label="Secciones">
+      <ul>
+        {enlaces.map((e) => <li><a href={e.href}>{e.texto}</a></li>)}
+      </ul>
+    </nav>
+    <span class="encabezado__timecode" aria-hidden="true" data-timecode>00:00:00:00</span>
+    <a class="encabezado__cv" href={perfil.cv} download>Descargar CV</a>
+  </div>
+  <div class="encabezado__progreso" aria-hidden="true"></div>
+</header>
+
+<style>
+  .encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--papel) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .encabezado__fila {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 3.5rem;
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-size: 0.9375rem;
+  }
+
+  .encabezado__marca {
+    font-stretch: 125%;
+    font-weight: 800;
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a,
+  .encabezado__cv {
+    text-decoration: none;
+    font-weight: 550;
+  }
+
+  nav a:hover,
+  .encabezado__cv:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .encabezado__cv {
+    padding: 0.35rem 0.75rem;
+    border: 1.5px solid var(--tinta);
+    border-radius: var(--radio);
+  }
+
+  .encabezado__timecode {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--cabezal);
+    min-width: 7.5ch;
+  }
+
+  /* El avance de la página, como el cabezal sobre la secuencia */
+  .encabezado__progreso {
+    height: 2px;
+    background: var(--cabezal);
+    transform-origin: left;
+    transform: scaleX(var(--progreso, 0));
+  }
+
+  @media (max-width: 56rem) {
+    .encabezado__timecode {
+      display: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    nav {
+      display: none;
+    }
+  }
+</style>

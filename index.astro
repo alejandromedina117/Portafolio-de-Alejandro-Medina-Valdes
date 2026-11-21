@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/Encabezado.astro';
+import Portada from '../components/Portada.astro';
+import SeccionVideo from '../components/SeccionVideo.astro';
+import SeccionDisenos from '../components/SeccionDisenos.astro';
+import SeccionFotos from '../components/SeccionFotos.astro';
+import SeccionAudio from '../components/SeccionAudio.astro';
+import Experiencia from '../components/Experiencia.astro';
+import SobreMi from '../components/SobreMi.astro';
+import Contacto from '../components/Contacto.astro';
+---
+
+<Base>
+  <Encabezado />
+  <main>
+    <Portada />
+    <div id="trabajo">
+      <SeccionVideo />
+      <SeccionDisenos />
+      <SeccionFotos />
+      <SeccionAudio />
+    </div>
+    <Experiencia />
+    <SobreMi />
+    <Contacto />
+  </main>
+
+  <!-- Visor de imágenes: se abre al hacer clic en un diseño o foto -->
+  <dialog class="visor" aria-label="Imagen ampliada">
+    <img alt="" />
+    <button type="button" class="visor__cerrar">Cerrar</button>
+  </dialog>
+</Base>
+
+<script>
+  const visor = document.querySelector<HTMLDialogElement>('.visor')!;
+  const img = visor.querySelector('img')!;
+
+  document.querySelectorAll<HTMLButtonElement>('[data-ampliar]').forEach((b) => {
+    b.addEventListener('click', () => {
+      img.src = b.dataset.ampliar!;
+      img.alt = b.dataset.alt ?? '';
+      visor.showModal();
+    });
+  });
+
+  visor.querySelector('.visor__cerrar')!.addEventListener('click', () => visor.close());
+  visor.addEventListener('click', (e) => {
+    if (e.target === visor) visor.close();
+  });
+</script>
+
+<style>
+  #trabajo {
+    scroll-margin-top: 3.5rem;
+  }
+
+  .visor {
+    max-width: min(94vw, 90rem);
+    max-height: 94vh;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .visor::backdrop {
+    background: rgb(10 26 48 / 0.92);
+  }
+
+  .visor img {
+    max-width: 100%;
+    max-height: 88vh;
+    margin-inline: auto;
+    border-radius: var(--radio);
+  }
+
+  .visor__cerrar {
+    display: block;
+    margin: 0.75rem auto 0;
+    font-family: var(--display);
+    font-weight: 650;
+    font-size: 1rem;
+    padding: 0.5rem 1.1rem;
+    border: 2px solid var(--papel-alto);
+    border-radius: var(--radio);
+    background: transparent;
+    color: var(--papel-alto);
+    cursor: pointer;
+  }
+</style>

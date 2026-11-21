@@ -1,0 +1,108 @@
+---
+/*
+ * Muestra la imagen de una pieza. Si todavía no hay imagen, dibuja un marco
+ * con la proporción y el formato recomendado, para que se vea cómo quedará.
+ */
+import { Image } from 'astro:assets';
+import type { Pieza } from '../data/portafolio';
+
+interface Props {
+  pieza: Pieza;
+  carpeta: string;
+  sizes?: string;
+}
+
+const { pieza, carpeta, sizes = '(max-width: 40rem) 100vw, 50vw' } = Astro.props;
+---
+
+{
+  pieza.imagen ? (
+    <button class="marco marco--imagen" type="button" data-ampliar={pieza.imagen.src} data-alt={pieza.alt ?? pieza.titulo}>
+      <Image src={pieza.imagen} alt={pieza.alt ?? pieza.titulo} sizes={sizes} widths={[480, 800, 1200, 1600]} />
+      <span class="solo-lectores">Ampliar imagen</span>
+    </button>
+  ) : (
+    <div class="marco marco--vacio" style={`aspect-ratio: ${pieza.proporcion}`}>
+      <span class="marco__esquinas" aria-hidden="true" />
+      <span class="marco__texto">
+        <strong>{pieza.titulo}</strong>
+        <span>{pieza.formatoSugerido}</span>
+        <span class="marco__ruta">Agrega la imagen en {carpeta}</span>
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .marco {
+    display: block;
+    width: 100%;
+    border-radius: var(--radio);
+    overflow: hidden;
+  }
+
+  .marco--imagen {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .marco--imagen :global(img) {
+    width: 100%;
+    height: auto;
+    transition: transform 0.4s ease;
+  }
+
+  .marco--imagen:hover :global(img) {
+    transform: scale(1.015);
+  }
+
+  .marco--vacio {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background:
+      linear-gradient(color-mix(in srgb, var(--color-pista) 28%, var(--papel-alto)) 0 0);
+    border: 1px solid color-mix(in srgb, var(--color-pista) 70%, var(--tinta));
+  }
+
+  /* Marcas de corte en las esquinas, como en un arte final */
+  .marco__esquinas {
+    position: absolute;
+    inset: 0.75rem;
+    --m: color-mix(in srgb, var(--tinta) 55%, transparent);
+    background:
+      linear-gradient(var(--m) 0 0) top left / 1rem 1px,
+      linear-gradient(var(--m) 0 0) top left / 1px 1rem,
+      linear-gradient(var(--m) 0 0) top right / 1rem 1px,
+      linear-gradient(var(--m) 0 0) top right / 1px 1rem,
+      linear-gradient(var(--m) 0 0) bottom left / 1rem 1px,
+      linear-gradient(var(--m) 0 0) bottom left / 1px 1rem,
+      linear-gradient(var(--m) 0 0) bottom right / 1rem 1px,
+      linear-gradient(var(--m) 0 0) bottom right / 1px 1rem;
+    background-repeat: no-repeat;
+  }
+
+  .marco__texto {
+    display: grid;
+    gap: 0.25rem;
+    text-align: center;
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-size: 0.875rem;
+    color: var(--tinta-suave);
+  }
+
+  .marco__texto strong {
+    font-stretch: 125%;
+    font-size: 1.25rem;
+    color: var(--tinta);
+  }
+
+  .marco__ruta {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+</style>

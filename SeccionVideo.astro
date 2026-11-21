@@ -1,0 +1,142 @@
+---
+import { short } from '../data/portafolio';
+---
+
+<section class="seccion" id="video" style="--color-pista: var(--video)">
+  <div class="contenedor video">
+    <div class="video__marco">
+      {
+        short.youtubeId ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${short.youtubeId}?rel=0&playsinline=1`}
+            title={short.titulo}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          />
+        ) : (
+          <div class="video__vacio">
+            <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+            <strong>Short de YouTube</strong>
+            <span>Vertical 9:16</span>
+            <span class="video__ruta">Pega el ID del video en src/data/portafolio.ts</span>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="video__texto">
+      <div class="seccion__cabecera video__cabecera">
+        <span class="pista">V3</span>
+        <h2 class="seccion__titulo">Video</h2>
+      </div>
+      <h3 class="video__titulo">{short.titulo}</h3>
+      {short.contexto && <p class="contexto">{short.contexto}</p>}
+      <p class="video__descripcion">{short.descripcion}</p>
+      <ul class="herramientas" aria-label="Herramientas">
+        {short.herramientas.map((h) => <li>{h}</li>)}
+      </ul>
+      {
+        short.youtubeId && (
+          <a class="video__enlace" href={`https://youtube.com/shorts/${short.youtubeId}`} target="_blank" rel="noopener">
+            Ver en YouTube
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .video {
+    display: grid;
+    grid-template-columns: minmax(16rem, 22rem) 1fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .video__marco {
+    aspect-ratio: 9 / 16;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--tinta);
+    border: 6px solid var(--tinta);
+    box-shadow: 0 30px 60px -30px rgb(16 42 76 / 0.55);
+  }
+
+  .video__marco iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video__vacio {
+    height: 100%;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.3rem;
+    padding: 1.5rem;
+    text-align: center;
+    background: linear-gradient(180deg, #173459, var(--tinta));
+    color: var(--video);
+    font-family: var(--display);
+    font-stretch: 100%;
+    font-size: 0.875rem;
+  }
+
+  .video__vacio strong {
+    font-stretch: 125%;
+    font-size: 1.25rem;
+    color: var(--papel-alto);
+    margin-top: 0.5rem;
+  }
+
+  .video__ruta {
+    font-size: 0.75rem;
+    color: #9fb0c8;
+    margin-top: 0.75rem;
+    max-width: 14rem;
+  }
+
+  .video__texto {
+    display: grid;
+    gap: 1rem;
+    max-width: 34rem;
+  }
+
+  .video__cabecera {
+    margin-bottom: 1rem;
+  }
+
+  .video__titulo {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-stretch: 112%;
+  }
+
+  .video__descripcion {
+    font-size: 1.1875rem;
+  }
+
+  .video__enlace {
+    font-family: var(--display);
+    font-weight: 650;
+    text-underline-offset: 0.25em;
+  }
+
+  @media (max-width: 48rem) {
+    .video {
+      grid-template-columns: 1fr;
+    }
+    .video__marco {
+      width: min(100%, 20rem);
+      margin-inline: auto;
+    }
+    .video__texto {
+      order: -1;
+    }
+  }
+</style>
